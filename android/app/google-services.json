@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "446098444143",
+    "project_id": "tic-tac-toe-c5kkpo",
+    "storage_bucket": "tic-tac-toe-c5kkpo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446098444143:android:f7ee53f30f5dfb19a8629a",
+        "android_client_info": {
+          "package_name": "com.alphacorporations.tictactoev2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA82dUh15W5EBmvS_3SwbPfTt4d3N31Iqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446098444143-d7tvpl0ndkrp8l2q9r1pctau5cnc47qi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alphacorporations.tictactoev2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446098444143:android:72e42a553a46310ba8629a",
+        "android_client_info": {
+          "package_name": "com.alphacorporations.tictactoev2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA82dUh15W5EBmvS_3SwbPfTt4d3N31Iqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446098444143-d7tvpl0ndkrp8l2q9r1pctau5cnc47qi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alphacorporations.tictactoev2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446098444143:android:fd36feb0115509c1a8629a",
+        "android_client_info": {
+          "package_name": "com.alphacorporations.tictactoev2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA82dUh15W5EBmvS_3SwbPfTt4d3N31Iqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446098444143-d7tvpl0ndkrp8l2q9r1pctau5cnc47qi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alphacorporations.tictactoev2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446098444143:android:2410bb755761b5aea8629a",
+        "android_client_info": {
+          "package_name": "com.alphacorporations.tictactoev2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA82dUh15W5EBmvS_3SwbPfTt4d3N31Iqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446098444143-kr6u0l62feldpiv6ovcm3u3hkgkg6d6n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446098444143-d7tvpl0ndkrp8l2q9r1pctau5cnc47qi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alphacorporations.tictactoev2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
