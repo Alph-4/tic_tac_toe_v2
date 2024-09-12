@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:animated_icon/animated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tic_tac_toe_v2/src/data/model/history_hive_model.dart';
+import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
 
@@ -35,8 +37,19 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
       if (hasWon()) {
         _winner = _activePlayer;
         _showDialog("Winner is ${_winner!.name}!");
+
+        if (_versusBot!) {
+          saveGame(player1, bot, _winner!.name);
+        } else {
+          saveGame(player1, player2, _winner!.name);
+        }
       } else if (isBoardFull()) {
         _showDialog("It's a draw!");
+        if (_versusBot!) {
+          saveGame(player1, bot, "Draw");
+        } else {
+          saveGame(player1, player2, "Draw");
+        }
       } else {
         _activePlayer = _versusBot!
             ? (_activePlayer == player1 ? bot : player1)
@@ -84,7 +97,13 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        FilledButton(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             setState(() {
               _versusBot = false;
@@ -93,13 +112,19 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           child: const Text('Play versus human'),
         ),
         const SizedBox(height: 16),
-        FilledButton(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             setState(() {
               _versusBot = true;
             });
           },
-          child: const Text('Play versus bot'),
+          child: const Text('Play versus BOT'),
         ),
       ],
     );
@@ -244,6 +269,14 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
             label: Text("Back"))
       ],
     );
+  }
+
+  void saveGame(Player playerX, Player PlayerY, String winner) {
+    HistoryBox.setHistory(HistoryModelHive(
+      playerXName: playerX.name,
+      playerOName: PlayerY.name,
+      winner: winner,
+    ));
   }
 
   Widget gameView() {

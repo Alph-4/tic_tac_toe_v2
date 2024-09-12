@@ -6,8 +6,6 @@ import 'package:tic_tac_toe_v2/src/view/main_menu/main_menu.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_controller.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
 
-import 'view/sample_feature/sample_item_details_view.dart';
-import 'view/sample_feature/sample_item_list_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -69,15 +67,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute<void>(
               settings: routeSettings,
               builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
-                  case SampleItemListView.routeName:
-                  default:
-                    return const SampleItemListView();
-                }
+                return Container();
               },
             );
           },
