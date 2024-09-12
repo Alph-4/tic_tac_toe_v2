@@ -186,13 +186,14 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           ),
         ],
       ),
-      body: Center(
+      body: Expanded(
+          child: Center(
         child: _versusBot == null
             ? gameTypeChoice()
             : _activePlayer == null
                 ? firstPlayerSelection()
                 : gameView(),
-      ),
+      )),
       floatingActionButton: _activePlayer != null
           ? FloatingActionButton(
               onPressed: () {
@@ -213,13 +214,20 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
 
   Widget firstPlayerSelection() {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("Who starts first ?"),
         SizedBox(
           height: 16,
         ),
-        FilledButton(
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             setState(() {
               _activePlayer = player1;
@@ -227,8 +235,14 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           },
           child: const Text('Player 1'),
         ),
-        const SizedBox(width: 20),
-        FilledButton(
+        const SizedBox(height: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             setState(() {
               if (_versusBot!) {
@@ -243,8 +257,14 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           },
           child: _versusBot! ? const Text('Bot') : const Text('Player 2'),
         ),
-        const SizedBox(width: 20),
-        FilledButton(
+        const SizedBox(height: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           onPressed: () {
             setState(() {
               if (_versusBot!) {
@@ -259,14 +279,17 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           },
           child: const Text('Flip a coin'),
         ),
-        ElevatedButton.icon(
-            icon: Icon(Icons.arrow_back_rounded),
-            onPressed: () {
-              setState(() {
-                _versusBot = null;
-              });
-            },
-            label: Text("Back"))
+        Align(
+          alignment: AlignmentDirectional(0, 1),
+          child: ElevatedButton.icon(
+              icon: Icon(Icons.arrow_back_rounded),
+              onPressed: () {
+                setState(() {
+                  _versusBot = null;
+                });
+              },
+              label: Text("Back")),
+        )
       ],
     );
   }
