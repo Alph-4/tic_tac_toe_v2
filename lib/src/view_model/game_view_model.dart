@@ -9,6 +9,18 @@ final gameViewModelProvider =
   return GameViewModel();
 });
 
+   final player1Provider = Provider<Player>((ref) {
+    return const Player("Joueur 1", "X");
+  });
+
+   final player2Provider = Provider<Player>((ref) {
+    return const Player("Joueur 2", "O");
+  });
+
+   final botPlayerProvider = Provider<Player>((ref) {
+    return const Player("Bot", "O");
+  });
+
 final boardProvider =
     AutoDisposeProvider((ref) => ref.watch(gameViewModelProvider).board);
 final activePlayerProvider =
@@ -24,7 +36,7 @@ class GameViewModel extends StateNotifier<GameState> {
           winner: null,
         ));
 
-  void updateBoard(int row, int col) {
+  void updateBoard(int row, int col, {bool isBotMove = false}) {
     state.board[row][col] = state.activePlayer!.symbol;
   }
 

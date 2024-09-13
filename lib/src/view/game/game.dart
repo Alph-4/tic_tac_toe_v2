@@ -23,16 +23,20 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
   late GameState _gameState;
   late bool? _versusBot;
 
+  late Player _player1;
+  late Player _player2;
+  late Player _botPlayer;
+
   final random = Random();
-  var player1 = const Player("Joueur 1", "X");
-  var player2 = const Player("Joueur 2", "O");
-  var bot = const Player("Bot", "O");
 
   @override
   Widget build(BuildContext context) {
     _gameState = ref.watch(gameViewModelProvider);
     _gameViewModel = ref.read(gameViewModelProvider.notifier);
     _versusBot = ref.watch(botProvider);
+    _player1 = ref.watch(player1Provider);
+    _player2 = ref.watch(player2Provider);
+    _botPlayer = ref.watch(botPlayerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +88,7 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
   }
 
   void _onCellTap(int row, int col) {
-    if (_versusBot == true && _gameState.activePlayer == bot) {
+    if (_versusBot == true && _gameState.activePlayer == _botPlayer) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Not your turn !"),
@@ -110,26 +114,27 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
     if (_gameViewModel.isBoardFull()) {
       _showDialog("It's a draw!");
       if (_versusBot!) {
-        _gameViewModel.saveGame(player1, bot, "Draw");
+        _gameViewModel.saveGame(_player1, _botPlayer, "Draw");
       } else {
-        _gameViewModel.saveGame(player1, player2, "Draw");
+        _gameViewModel.saveGame(_player1, _player2, "Draw");
       }
     } else if (_gameViewModel.hasWon()) {
       _showDialog("Winner is ${_gameState.activePlayer!.name}!");
 
       if (_versusBot!) {
-        _gameViewModel.saveGame(player1, bot, _gameState.activePlayer!.name);
+        _gameViewModel.saveGame(
+            _player1, _botPlayer, _gameState.activePlayer!.name);
       } else {
         _gameViewModel.saveGame(
-            player1, player2, _gameState.activePlayer!.name);
+            _player1, _player2, _gameState.activePlayer!.name);
       }
     } else {
       if (_versusBot!) {
         _gameViewModel.setActivePlayer(
-            _gameState.activePlayer == player1 ? bot : player1);
+            _gameState.activePlayer == _player1 ? _botPlayer : _player1);
       } else {
         _gameViewModel.setActivePlayer(
-            _gameState.activePlayer == player1 ? player2 : player1);
+            _gameState.activePlayer == _player1 ? _player2 : _player1);
       }
     }
   }
@@ -214,7 +219,7 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
               ),
             ),
             onPressed: () {
-              _gameViewModel.setActivePlayer(player1);
+              _gameViewModel.setActivePlayer(_player1);
             },
             child: const Text('Player 1'),
           ),
@@ -231,13 +236,13 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
             ),
             onPressed: () {
               if (_versusBot!) {
-                _gameViewModel.setActivePlayer(bot);
+                _gameViewModel.setActivePlayer(_botPlayer);
 
-                if (_gameState.activePlayer == bot) {
+                if (_gameState.activePlayer == _botPlayer) {
                   Future.delayed(const Duration(milliseconds: 500), _botMove);
                 }
               } else {
-                _gameViewModel.setActivePlayer(player2);
+                _gameViewModel.setActivePlayer(_player2);
               }
             },
             child: _versusBot! ? const Text('Bot') : const Text('Player 2'),
@@ -256,14 +261,14 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
             onPressed: () {
               if (_versusBot!) {
                 _gameViewModel
-                    .setActivePlayer(random.nextBool() ? player1 : bot);
+                    .setActivePlayer(random.nextBool() ? _player1 : _botPlayer);
 
-                if (_gameState.activePlayer == bot) {
+                if (_gameState.activePlayer == _botPlayer) {
                   Future.delayed(const Duration(milliseconds: 500), _botMove);
                 }
               } else {
                 _gameViewModel
-                    .setActivePlayer(random.nextBool() ? player1 : player2);
+                    .setActivePlayer(random.nextBool() ? _player1 : _player2);
               }
             },
             child: const Text('Flip a coin'),
@@ -281,7 +286,7 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
   /// updates the game state and checks if there is a winner. If there is a
   /// winner, the game is reset.
   Widget gameView() {
-    if (_gameState.activePlayer == bot) {
+    if (_gameState.activePlayer == _botPlayer) {
       Future.delayed(const Duration(milliseconds: 500), _botMove);
     }
 
@@ -339,7 +344,8 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
     // Choisir une case vide aléatoirement
     final random = Random();
     List<int> move = emptyCells[random.nextInt(emptyCells.length)];
-    _gameViewModel.updateBoard(move[0], move[1]);
+    _gameViewModel.updateBoard(move[0], move[1], isBotMove: true);
+    _gameViewModel.setActivePlayer(_player1);
   }
 
   @override
