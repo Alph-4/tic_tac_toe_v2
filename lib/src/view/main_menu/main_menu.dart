@@ -16,7 +16,7 @@ class _MainMenuState extends State<MainMenu> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(
+            const Text(
               'Tic Tac Toe',
               style: TextStyle(
                 fontSize: 50,

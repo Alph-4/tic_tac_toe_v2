@@ -1,20 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:tic_tac_toe_v2/firebase_options.dart';
-import 'package:tic_tac_toe_v2/src/data/model/history_hive_model.dart';
 import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 import 'src/app.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'src/view/settings/settings_controller.dart';
 import 'src/view/settings/settings_service.dart';
 
 void main() async {
+  final settingsController = SettingsController(SettingsService());
+
   // Set up the SettingsController, which will glue user settings to multiple
   // Flutter Widgets.
   WidgetsFlutterBinding.ensureInitialized();
-  // Hive.registerAdapter(HistoryModelHiveAdapter());
-  // await HistoryBox.openBox();
-  final settingsController = SettingsController(SettingsService());
+  await Hive.initFlutter();
+  await HistoryBox.openBox();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -26,5 +28,5 @@ void main() async {
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+  runApp(ProviderScope(child: MyApp(settingsController: settingsController)));
 }

@@ -2,167 +2,38 @@ import 'dart:math';
 
 import 'package:animated_icon/animated_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tic_tac_toe_v2/src/data/model/history_hive_model.dart';
-import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
+import 'package:tic_tac_toe_v2/src/data/provider/game_provider.dart';
+import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
+import 'package:tic_tac_toe_v2/src/view_model/game_view_model.dart';
 
-class TicTacToeGame extends StatefulWidget {
+class TicTacToeGame extends ConsumerStatefulWidget {
   const TicTacToeGame({super.key});
 
   @override
   _TicTacToeGameState createState() => _TicTacToeGameState();
 }
 
-class _TicTacToeGameState extends State<TicTacToeGame> {
-  List<List<String>> _board =
-      List.generate(3, (i) => List.generate(3, (j) => ""), growable: false);
+class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
+  late GameViewModel _gameViewModel;
+  late GameState _gameState;
+  late bool? _versusBot;
 
-  Player? _activePlayer;
   final random = Random();
-
-  var player1 = Player("Joueur 1", "X");
-  var player2 = Player("Joueur 2", "O");
-  var bot = Player("Bot", "O");
-  bool? _versusBot;
-  Player? _winner;
-
-  void _onCellTap(int row, int col) {
-    if (_winner != null || _board[row][col].isNotEmpty) return;
-
-    setState(() {
-      _board[row][col] = _activePlayer!.symbol;
-
-      if (hasWon()) {
-        _winner = _activePlayer;
-        _showDialog("Winner is ${_winner!.name}!");
-
-        if (_versusBot!) {
-          saveGame(player1, bot, _winner!.name);
-        } else {
-          saveGame(player1, player2, _winner!.name);
-        }
-      } else if (isBoardFull()) {
-        _showDialog("It's a draw!");
-        if (_versusBot!) {
-          saveGame(player1, bot, "Draw");
-        } else {
-          saveGame(player1, player2, "Draw");
-        }
-      } else {
-        _activePlayer = _versusBot!
-            ? (_activePlayer == player1 ? bot : player1)
-            : (_activePlayer == player1 ? player2 : player1);
-
-        if (_activePlayer == bot) {
-          Future.delayed(const Duration(milliseconds: 500), _botMove);
-        }
-      }
-    });
-  }
-
-  void _showDialog(String title) {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(title),
-          actions: [
-            FilledButton(
-              child: const Text("New Game"),
-              onPressed: () {
-                _reset();
-
-                Navigator.of(ctx).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  bool isBoardFull() {
-    for (var row in _board) {
-      for (var cell in row) {
-        if (cell.isEmpty) return false;
-      }
-    }
-    return true;
-  }
-
-  Widget gameTypeChoice() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onPressed: () {
-            setState(() {
-              _versusBot = false;
-            });
-          },
-          child: const Text('Play versus human'),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onPressed: () {
-            setState(() {
-              _versusBot = true;
-            });
-          },
-          child: const Text('Play versus BOT'),
-        ),
-      ],
-    );
-  }
-
-  bool hasWon() {
-    // check rows
-    for (int row = 0; row < 3; row++) {
-      if (_board[row][0] == _activePlayer!.symbol &&
-          _board[row][1] == _activePlayer!.symbol &&
-          _board[row][2] == _activePlayer!.symbol) {
-        return true;
-      }
-    }
-
-    // check columns
-    for (int col = 0; col < 3; col++) {
-      if (_board[0][col] == _activePlayer!.symbol &&
-          _board[1][col] == _activePlayer!.symbol &&
-          _board[2][col] == _activePlayer!.symbol) {
-        return true;
-      }
-    }
-
-    // check diagonals
-    if ((_board[0][0] == _activePlayer!.symbol &&
-            _board[1][1] == _activePlayer!.symbol &&
-            _board[2][2] == _activePlayer!.symbol) ||
-        (_board[0][2] == _activePlayer!.symbol &&
-            _board[1][1] == _activePlayer!.symbol &&
-            _board[2][0] == _activePlayer!.symbol)) {
-      return true;
-    }
-    return false;
-  }
+  var player1 = const Player("Joueur 1", "X");
+  var player2 = const Player("Joueur 2", "O");
+  var bot = const Player("Bot", "O");
 
   @override
   Widget build(BuildContext context) {
+    _gameState = ref.watch(gameViewModelProvider);
+    _gameViewModel = ref.read(gameViewModelProvider.notifier);
+    _versusBot = ref.watch(botProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tic Tac Toe'),
@@ -190,19 +61,19 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
           child: Center(
         child: _versusBot == null
             ? gameTypeChoice()
-            : _activePlayer == null
+            : _gameState.activePlayer == null
                 ? firstPlayerSelection()
                 : gameView(),
       )),
-      floatingActionButton: _activePlayer != null
+      floatingActionButton: _gameState.activePlayer != null
           ? FloatingActionButton(
               onPressed: () {
-                _reset();
+                _gameViewModel.reset();
               },
               child: AnimateIcon(
                 key: UniqueKey(),
                 onTap: () {
-                  _reset();
+                  _gameViewModel.reset();
                 },
                 iconType: IconType.animatedOnTap,
                 animateIcon: AnimateIcons.refresh,
@@ -212,102 +83,213 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     );
   }
 
+  void _onCellTap(int row, int col) {
+    if (_versusBot == true && _gameState.activePlayer == bot) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Not your turn !"),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      return;
+    }
+    if (_gameState.board[row][col].isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("This cell is already filled !"),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      HapticFeedback.vibrate();
+      HapticFeedback.vibrate();
+
+      return;
+    }
+    _gameViewModel.updateBoard(row, col);
+
+    if (_gameViewModel.isBoardFull()) {
+      _showDialog("It's a draw!");
+      if (_versusBot!) {
+        _gameViewModel.saveGame(player1, bot, "Draw");
+      } else {
+        _gameViewModel.saveGame(player1, player2, "Draw");
+      }
+    } else if (_gameViewModel.hasWon()) {
+      _showDialog("Winner is ${_gameState.activePlayer!.name}!");
+
+      if (_versusBot!) {
+        _gameViewModel.saveGame(player1, bot, _gameState.activePlayer!.name);
+      } else {
+        _gameViewModel.saveGame(
+            player1, player2, _gameState.activePlayer!.name);
+      }
+    } else {
+      if (_versusBot!) {
+        _gameViewModel.setActivePlayer(
+            _gameState.activePlayer == player1 ? bot : player1);
+      } else {
+        _gameViewModel.setActivePlayer(
+            _gameState.activePlayer == player1 ? player2 : player1);
+      }
+    }
+  }
+
+  void _showDialog(String title) {
+    HapticFeedback.vibrate();
+    _addPoint();
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(title),
+          actions: [
+            FilledButton(
+              child: const Text("New Game"),
+              onPressed: () {
+                _gameViewModel.reset();
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _addPoint() {}
+
+  Widget gameTypeChoice() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: () {
+            ref.read(botProvider.notifier).blabla(false);
+          },
+          child: const Text('Play versus human'),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: () {
+            ref.read(botProvider.notifier).blabla(true);
+          },
+          child: const Text('Play versus BOT'),
+        ),
+      ],
+    );
+  }
+
   Widget firstPlayerSelection() {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("Who starts first ?"),
-        SizedBox(
+        const Text(
+          "Who starts first ?",
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
           height: 16,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
+            onPressed: () {
+              _gameViewModel.setActivePlayer(player1);
+            },
+            child: const Text('Player 1'),
           ),
-          onPressed: () {
-            setState(() {
-              _activePlayer = player1;
-            });
-          },
-          child: const Text('Player 1'),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-          onPressed: () {
-            setState(() {
+            onPressed: () {
               if (_versusBot!) {
-                _activePlayer = bot;
-                if (_activePlayer == bot) {
-                  Future.delayed(Duration(milliseconds: 500), _botMove);
+                _gameViewModel.setActivePlayer(bot);
+
+                if (_gameState.activePlayer == bot) {
+                  Future.delayed(const Duration(milliseconds: 500), _botMove);
                 }
               } else {
-                _activePlayer = player2;
+                _gameViewModel.setActivePlayer(player2);
               }
-            });
-          },
-          child: _versusBot! ? const Text('Bot') : const Text('Player 2'),
+            },
+            child: _versusBot! ? const Text('Bot') : const Text('Player 2'),
+          ),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-          onPressed: () {
-            setState(() {
+            onPressed: () {
               if (_versusBot!) {
-                _activePlayer = random.nextBool() ? player1 : bot;
-                if (_activePlayer == bot) {
-                  Future.delayed(Duration(milliseconds: 500), _botMove);
+                _gameViewModel
+                    .setActivePlayer(random.nextBool() ? player1 : bot);
+
+                if (_gameState.activePlayer == bot) {
+                  Future.delayed(const Duration(milliseconds: 500), _botMove);
                 }
               } else {
-                _activePlayer = random.nextBool() ? player1 : player2;
+                _gameViewModel
+                    .setActivePlayer(random.nextBool() ? player1 : player2);
               }
-            });
-          },
-          child: const Text('Flip a coin'),
+            },
+            child: const Text('Flip a coin'),
+          ),
         ),
-        Align(
-          alignment: AlignmentDirectional(0, 1),
-          child: ElevatedButton.icon(
-              icon: Icon(Icons.arrow_back_rounded),
-              onPressed: () {
-                setState(() {
-                  _versusBot = null;
-                });
-              },
-              label: Text("Back")),
-        )
       ],
     );
   }
 
-  void saveGame(Player playerX, Player PlayerY, String winner) {
-    HistoryBox.setHistory(HistoryModelHive(
-      playerXName: playerX.name,
-      playerOName: PlayerY.name,
-      winner: winner,
-    ));
-  }
-
+  /// A widget that displays the game board and updates it when the user taps
+  /// on a cell. The game board is a 3x3 grid where each cell contains a 'X' or
+  /// 'O' character. The characters are colored blue and red respectively.
+  ///
+  /// When the user taps on a cell, the [_onCellTap] function is called which
+  /// updates the game state and checks if there is a winner. If there is a
+  /// winner, the game is reset.
   Widget gameView() {
+    if (_gameState.activePlayer == bot) {
+      Future.delayed(const Duration(milliseconds: 500), _botMove);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(_activePlayer!.name),
+        Text(_gameState.activePlayer!.name),
         Flexible(
             child: Container(
           alignment: Alignment.center,
@@ -325,13 +307,14 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
                   ),
                   child: Center(
                     child: Text(
-                      _board[row][col],
+                      _gameState.board[row][col],
                       style: TextStyle(
                         fontSize: 50,
                         fontFamily: GoogleFonts.permanentMarker().fontFamily,
                         fontWeight: FontWeight.bold,
-                        color:
-                            _board[row][col] == 'X' ? Colors.blue : Colors.red,
+                        color: _gameState.board[row][col] == 'X'
+                            ? Colors.blue
+                            : Colors.red,
                       ),
                     ),
                   ),
@@ -345,11 +328,10 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
   }
 
   void _botMove() {
-    // Liste des cases vides
     List<List<int>> emptyCells = [];
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        if (_board[i][j].isEmpty) {
+        if (_gameState.board[i][j].isEmpty) {
           emptyCells.add([i, j]);
         }
       }
@@ -357,14 +339,11 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     // Choisir une case vide aléatoirement
     final random = Random();
     List<int> move = emptyCells[random.nextInt(emptyCells.length)];
-    _onCellTap(move[0], move[1]);
+    _gameViewModel.updateBoard(move[0], move[1]);
   }
 
-  void _reset() {
-    setState(() {
-      _activePlayer = null;
-      _winner = null;
-      _board = List.generate(3, (_) => List.filled(3, ''));
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

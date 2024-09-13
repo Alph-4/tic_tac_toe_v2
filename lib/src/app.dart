@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tic_tac_toe_v2/src/view/game/game.dart';
 import 'package:tic_tac_toe_v2/src/view/main_menu/main_menu.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_controller.dart';
-import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
 
 
 /// The Widget that configures your application.
@@ -59,7 +57,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(useMaterial3: true),
           darkTheme: ThemeData.dark(useMaterial3: true),
           themeMode: settingsController.themeMode,
-          home: MainMenu(),
+          home: const MainMenu(),
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.

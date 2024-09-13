@@ -5,8 +5,8 @@ import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 
 class HistoryListView extends StatelessWidget {
   const HistoryListView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

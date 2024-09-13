@@ -1,9 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'history_hive_model.g.dart';
-
 @HiveType(typeId: 0)
-class HistoryModelHive {
+class HistoryModelHive extends HiveObject {
   HistoryModelHive({
     required this.playerXName,
     required this.playerOName,
