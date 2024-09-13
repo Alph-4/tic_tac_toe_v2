@@ -1,5 +1,5 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:tic_tac_toe_v2/src/data/model/history_hive_model.dart';
+import 'package:tic_tac_toe_v2/src/data/model/history_model.dart';
 import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
@@ -9,17 +9,17 @@ final gameViewModelProvider =
   return GameViewModel();
 });
 
-   final player1Provider = Provider<Player>((ref) {
-    return const Player("Joueur 1", "X");
-  });
+final player1Provider = Provider<Player>((ref) {
+  return const Player("Joueur 1", "X");
+});
 
-   final player2Provider = Provider<Player>((ref) {
-    return const Player("Joueur 2", "O");
-  });
+final player2Provider = Provider<Player>((ref) {
+  return const Player("Joueur 2", "O");
+});
 
-   final botPlayerProvider = Provider<Player>((ref) {
-    return const Player("Bot", "O");
-  });
+final botPlayerProvider = Provider<Player>((ref) {
+  return const Player("Bot", "O");
+});
 
 final boardProvider =
     AutoDisposeProvider((ref) => ref.watch(gameViewModelProvider).board);
@@ -71,10 +71,10 @@ class GameViewModel extends StateNotifier<GameState> {
     return false;
   }
 
-  void saveGame(Player playerX, Player PlayerY, String winner) {
-    HistoryBox.setHistory(HistoryModelHive(
+  void saveGame(Player playerX, Player PlayerO, String winner) {
+    HistoryBox.setHistory(HistoryModel(
       playerXName: playerX.name,
-      playerOName: PlayerY.name,
+      playerOName: PlayerO.name,
       winner: winner,
     ));
   }
@@ -106,8 +106,6 @@ class GameViewModel extends StateNotifier<GameState> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    reset();
   }
 }

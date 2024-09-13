@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tic_tac_toe_v2/src/data/model/history_hive_model.dart';
+import 'package:tic_tac_toe_v2/src/data/model/history_model.dart';
 import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 
 class HistoryListView extends StatelessWidget {
@@ -10,7 +10,7 @@ class HistoryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<HistoryModelHive> historyList = HistoryBox.getHistory();
+    List<HistoryModel> historyList = HistoryBox.getHistory();
 
     historyList.sort((a, b) => b.date.compareTo(a.date));
     return Scaffold(
@@ -20,7 +20,6 @@ class HistoryListView extends StatelessWidget {
                 'No game history !',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.yellow,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -50,7 +49,7 @@ class HistoryListView extends StatelessWidget {
                       ),
                       child: IntrinsicHeight(
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
                               width: 10,

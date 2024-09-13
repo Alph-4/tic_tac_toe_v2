@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:tic_tac_toe_v2/firebase_options.dart';
+import 'package:tic_tac_toe_v2/src/data/model/history_adapter_model.dart';
 import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
 import 'src/app.dart';
 import 'src/view/settings/settings_controller.dart';
@@ -15,6 +16,7 @@ void main() async {
   // Flutter Widgets.
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(HistoryModelAdapter());
   await HistoryBox.openBox();
 
   await Firebase.initializeApp(

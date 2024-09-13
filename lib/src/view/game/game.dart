@@ -8,7 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_toe_v2/src/data/provider/game_provider.dart';
 import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
+import 'package:tic_tac_toe_v2/src/view/main_menu/main_menu.dart';
 import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
+import 'package:tic_tac_toe_v2/src/view/widgets/history_list.dart';
 import 'package:tic_tac_toe_v2/src/view_model/game_view_model.dart';
 
 class TicTacToeGame extends ConsumerStatefulWidget {
@@ -32,11 +34,12 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
   @override
   Widget build(BuildContext context) {
     _gameState = ref.watch(gameViewModelProvider);
-    _gameViewModel = ref.read(gameViewModelProvider.notifier);
     _versusBot = ref.watch(botProvider);
-    _player1 = ref.watch(player1Provider);
-    _player2 = ref.watch(player2Provider);
-    _botPlayer = ref.watch(botPlayerProvider);
+
+    _gameViewModel = ref.read(gameViewModelProvider.notifier);
+    _player1 = ref.read(player1Provider);
+    _player2 = ref.read(player2Provider);
+    _botPlayer = ref.read(botPlayerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,9 +56,6 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Navigate to the settings page. If the user leaves and returns
-              // to the app after it has been killed while running in the
-              // background, the navigation stack is restored.
               Navigator.restorablePushNamed(context, SettingsView.routeName);
             },
           ),
@@ -150,6 +150,15 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
           title: Text(title),
           actions: [
             FilledButton(
+              child: const Text("Exit"),
+              onPressed: () {
+                _gameViewModel.reset(); // Réinitialise l'état du jeu
+                Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                Navigator.of(context)
+                    .pop(); // Reviens à l'écran précédent (menu principal)
+              },
+            ),
+            FilledButton(
               child: const Text("New Game"),
               onPressed: () {
                 _gameViewModel.reset();
@@ -193,6 +202,13 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
           },
           child: const Text('Play versus BOT'),
         ),
+        SizedBox(
+          height: 500,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: HistoryListView(),
+          ),
+        )
       ],
     );
   }
@@ -278,13 +294,6 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
     );
   }
 
-  /// A widget that displays the game board and updates it when the user taps
-  /// on a cell. The game board is a 3x3 grid where each cell contains a 'X' or
-  /// 'O' character. The characters are colored blue and red respectively.
-  ///
-  /// When the user taps on a cell, the [_onCellTap] function is called which
-  /// updates the game state and checks if there is a winner. If there is a
-  /// winner, the game is reset.
   Widget gameView() {
     if (_gameState.activePlayer == _botPlayer) {
       Future.delayed(const Duration(milliseconds: 500), _botMove);
