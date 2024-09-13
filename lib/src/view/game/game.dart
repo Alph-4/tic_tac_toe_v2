@@ -202,12 +202,9 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
           },
           child: const Text('Play versus BOT'),
         ),
-        SizedBox(
-          height: 500,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: HistoryListView(),
-          ),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: HistoryListView(),
         )
       ],
     );
@@ -255,7 +252,8 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
                 _gameViewModel.setActivePlayer(_botPlayer);
 
                 if (_gameState.activePlayer == _botPlayer) {
-                  Future.delayed(const Duration(milliseconds: 500), _botMove);
+                  Future.delayed(const Duration(milliseconds: 500),
+                      _gameViewModel.botMove);
                 }
               } else {
                 _gameViewModel.setActivePlayer(_player2);
@@ -280,7 +278,8 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
                     .setActivePlayer(random.nextBool() ? _player1 : _botPlayer);
 
                 if (_gameState.activePlayer == _botPlayer) {
-                  Future.delayed(const Duration(milliseconds: 500), _botMove);
+                  Future.delayed(const Duration(milliseconds: 500),
+                      _gameViewModel.botMove);
                 }
               } else {
                 _gameViewModel
@@ -296,7 +295,7 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
 
   Widget gameView() {
     if (_gameState.activePlayer == _botPlayer) {
-      Future.delayed(const Duration(milliseconds: 500), _botMove);
+      Future.delayed(const Duration(milliseconds: 500), _gameViewModel.botMove);
     }
 
     return Column(
@@ -339,22 +338,6 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
         ))
       ],
     );
-  }
-
-  void _botMove() {
-    List<List<int>> emptyCells = [];
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (_gameState.board[i][j].isEmpty) {
-          emptyCells.add([i, j]);
-        }
-      }
-    }
-    // Choisir une case vide aléatoirement
-    final random = Random();
-    List<int> move = emptyCells[random.nextInt(emptyCells.length)];
-    _gameViewModel.updateBoard(move[0], move[1], isBotMove: true);
-    _gameViewModel.setActivePlayer(_player1);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:riverpod/riverpod.dart';
 import 'package:tic_tac_toe_v2/src/data/model/history_model.dart';
 import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
@@ -5,8 +7,11 @@ import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
 
 final gameViewModelProvider =
-    AutoDisposeStateNotifierProvider<GameViewModel, GameState>((ref) {
-  return GameViewModel();
+    StateNotifierProvider<GameViewModel, GameState>((ref) {
+  final player1 = ref.read(player1Provider);
+  final player2 = ref.read(player2Provider);
+  final botPlayer = ref.read(botPlayerProvider);
+  return GameViewModel(player1, player2, botPlayer);
 });
 
 final player1Provider = Provider<Player>((ref) {
@@ -29,7 +34,11 @@ final winnerProvider =
     AutoDisposeProvider((ref) => ref.watch(gameViewModelProvider).winner);
 
 class GameViewModel extends StateNotifier<GameState> {
-  GameViewModel()
+  final Player player1;
+  final Player player2;
+  final Player botPlayer;
+
+  GameViewModel(this.player1, this.player2, this.botPlayer)
       : super(GameState(
           board: List.generate(3, (_) => List.filled(3, "")),
           activePlayer: null,
@@ -38,6 +47,22 @@ class GameViewModel extends StateNotifier<GameState> {
 
   void updateBoard(int row, int col, {bool isBotMove = false}) {
     state.board[row][col] = state.activePlayer!.symbol;
+  }
+
+  void botMove() {
+    List<List<int>> emptyCells = [];
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        if (state.board[i][j].isEmpty) {
+          emptyCells.add([i, j]);
+        }
+      }
+    }
+    // Choisir une case vide aléatoirement
+    final random = Random();
+    List<int> move = emptyCells[random.nextInt(emptyCells.length)];
+    updateBoard(move[0], move[1], isBotMove: true);
+    setActivePlayer(player1);
   }
 
   bool hasWon() {
