@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:tic_tac_toe_v2/firebase_options.dart';
 import 'package:tic_tac_toe_v2/src/data/model/history_adapter_model.dart';
-import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
-import 'src/app.dart';
-import 'src/view/settings/settings_controller.dart';
-import 'src/view/settings/settings_service.dart';
+import 'package:tic_tac_toe_v2/src/data/local/history_box.dart';
+import 'app.dart';
+import 'src/ui/settings/settings_controller.dart';
+import 'src/ui/settings/settings_service.dart';
 
 void main() async {
   final settingsController = SettingsController(SettingsService());

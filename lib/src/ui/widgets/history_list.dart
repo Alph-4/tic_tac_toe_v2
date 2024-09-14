@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tic_tac_toe_v2/src/data/model/history_model.dart';
-import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
+import 'package:tic_tac_toe_v2/src/data/local/history_box.dart';
 
 class HistoryListView extends StatelessWidget {
   const HistoryListView({
@@ -26,8 +26,8 @@ class HistoryListView extends StatelessWidget {
             )
           : ElevatedButton.icon(
               onPressed: () => showHistory(context, historyList),
-              label: Text("Show history"),
-              icon: Icon(Icons.history)),
+              label: const Text("Show history"),
+              icon: const Icon(Icons.history)),
     );
   }
 

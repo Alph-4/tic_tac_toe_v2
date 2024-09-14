@@ -1,0 +1,15 @@
+{
+  "appTitle": "tic_tac_toe_v2",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "localPlayBtn": "Local Game",
+  "@localPlayBtn": {
+    "description": "Local play button"
+  },
+  "onlinePlayBtn": "Online Game",
+  "@onlinePlayBtn": {
+    "description": "Online play button"
+  }
+
+}

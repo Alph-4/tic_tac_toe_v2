@@ -8,10 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_toe_v2/src/data/provider/game_provider.dart';
 import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
-import 'package:tic_tac_toe_v2/src/view/main_menu/main_menu.dart';
-import 'package:tic_tac_toe_v2/src/view/settings/settings_view.dart';
-import 'package:tic_tac_toe_v2/src/view/widgets/history_list.dart';
-import 'package:tic_tac_toe_v2/src/view_model/game_view_model.dart';
+import 'package:tic_tac_toe_v2/src/ui/main_menu/main_menu.dart';
+import 'package:tic_tac_toe_v2/src/ui/settings/settings_view.dart';
+import 'package:tic_tac_toe_v2/src/ui/widgets/history_list.dart';
+import 'package:tic_tac_toe_v2/src/ui/view_model/game_view_model.dart';
 
 class TicTacToeGame extends ConsumerStatefulWidget {
   const TicTacToeGame({super.key});
@@ -202,7 +202,7 @@ class _TicTacToeGameState extends ConsumerState<TicTacToeGame> {
           },
           child: const Text('Play versus BOT'),
         ),
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(8.0),
           child: HistoryListView(),
         )

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:riverpod/riverpod.dart';
 import 'package:tic_tac_toe_v2/src/data/model/history_model.dart';
-import 'package:tic_tac_toe_v2/src/data/source/local/history_box.dart';
+import 'package:tic_tac_toe_v2/src/data/local/history_box.dart';
 import 'package:tic_tac_toe_v2/src/model/game.dart';
 import 'package:tic_tac_toe_v2/src/model/player.dart';
 
@@ -129,8 +129,4 @@ class GameViewModel extends StateNotifier<GameState> {
     state = state.copyWith(activePlayer: player);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

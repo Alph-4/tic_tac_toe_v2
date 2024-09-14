@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe_v2/src/view/game/game.dart';
+import 'package:tic_tac_toe_v2/src/ui/game/game.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -41,7 +42,7 @@ class _MainMenuState extends State<MainMenu> {
                         ),
                       );
                     },
-                    child: const Text('Local Game'),
+                    child: Text(AppLocalizations.of(context)!.localPlayBtn),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
@@ -55,7 +56,7 @@ class _MainMenuState extends State<MainMenu> {
                     onPressed: () {
                       // TODO: Implement online game
                     },
-                    child: const Text('Online Game'),
+                    child: Text(AppLocalizations.of(context)!.onlinePlayBtn),
                   )
                 ],
               ),

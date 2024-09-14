@@ -1,0 +1,46 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:enum_to_string/enum_to_string.dart';
+
+enum Flavor { development, production }
+
+@immutable
+class Constants {
+  const Constants._({
+    required this.endpoint,
+    required this.apiKey,
+  });
+
+  factory Constants.of() {
+    final flavor = Flavor.values.toString();
+
+    switch (flavor) {
+      case Flavor.development:
+        return Constants._dev();
+      case Flavor.production:
+      default:
+        return Constants._prd();
+    }
+  }
+
+  factory Constants._dev() {
+    return const Constants._(
+      endpoint: '',
+      apiKey: '',
+    );
+  }
+
+  factory Constants._prd() {
+    return const Constants._(
+      endpoint: '',
+      apiKey: '',
+    );
+  }
+
+  static late final Constants instance = Constants.of();
+
+  final String endpoint;
+  final String apiKey;
+}
+
+mixin EnumToString {}

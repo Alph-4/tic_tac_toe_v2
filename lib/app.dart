@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tic_tac_toe_v2/src/view/main_menu/main_menu.dart';
-import 'package:tic_tac_toe_v2/src/view/settings/settings_controller.dart';
+import 'package:tic_tac_toe_v2/src/ui/main_menu/main_menu.dart';
+import 'package:tic_tac_toe_v2/src/ui/settings/settings_controller.dart';
 
 
 /// The Widget that configures your application.
@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [
-            Locale('en', ''), // English, no country code
+            Locale('en', 'EN'), // English, no country code
+            Locale('fr', 'FR'), // English, no country code
           ],
 
           // Use AppLocalizations to configure the correct application title
